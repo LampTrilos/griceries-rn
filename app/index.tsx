@@ -1,8 +1,7 @@
-import {ImageBackground, StyleSheet, Text, View, FlatList, useWindowDimensions} from "react-native";
+import {ImageBackground, StyleSheet, Text, View, FlatList, Dimensions} from "react-native";
 
 export default function Index() {
 
-    const {width} =  useWindowDimensions();
 
     return (
         <View style={styles.container}>
@@ -29,6 +28,8 @@ export default function Index() {
     );
 }
 
+const deviceWidth = Dimensions.get('window').width;
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -47,7 +48,7 @@ const styles = StyleSheet.create({
     },
     item: {
         backgroundColor: 'white',
-        width: (width) => width,
+        width: deviceWidth * 6/7,
         marginTop: 3,
         marginBottom: 3,
         paddingTop: 10,
