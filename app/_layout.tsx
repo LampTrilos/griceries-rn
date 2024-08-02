@@ -6,8 +6,8 @@ export default function RootLayout() {
       <Stack.Screen name="index"
           options={{
           title: 'Grocery bag (girl)',
-          headerStyle: { backgroundColor: '#f4511e' },
-          headerTintColor: '#fff',
+          headerStyle: { backgroundColor: '#dffc35' },
+          headerTintColor: '#085959',
           headerTitleStyle: {
               fontWeight: 'bold',
           }
