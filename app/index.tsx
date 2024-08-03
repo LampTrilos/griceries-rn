@@ -22,15 +22,16 @@ export default function Index() {
          //console.log('delete ' + direction)
         // console.log(item)
         dispatch(removeItem(item));
+        setGroceriesToShow(groceriesToShow + 1);
+        console.log(groceriesToShow)
         //console.log('Groceries are ' + groceriesListFromStore)
     };
-
-
-    //const [groceriesToShow, setGroceriesToShow] = useState([]);
+    const [groceriesToShow, setGroceriesToShow] = useState(1);
 
     // Fetch initial data from Firebase the first time the component loads. The list is actually the store list, which is actually then synced with firebase
     const groceriesFromDb = []
     useEffect(() => {
+        console.log('reloading')
         groceriesFromDb.value = []
         //Insert a row for test purposes
         //axios.post('https://test-f94ee-default-rtdb.europe-west1.firebasedatabase.app/groceryList.json', {title: 'Tiraki44'})
@@ -61,7 +62,7 @@ export default function Index() {
                 // Handle any errors here
                 console.error('Error fetching grocery list:', error);
             });
-    }, [groceriesListFromStore]);
+    }, [groceriesToShow]);
 
     //For swipe buttons
     const renderRightActions = (
@@ -76,7 +77,7 @@ export default function Index() {
          return (<View style={styles.swipedRow}>
                         <Animated.View >
                             <TouchableOpacity>
-                                <Text style={styles.deleteButtonText}>Deleting...</Text>
+                                {/*<Text style={styles.deleteButtonText}>Deleting...</Text>*/}
                             </TouchableOpacity>
                         </Animated.View>
                         </View>);
@@ -169,8 +170,10 @@ const styles = StyleSheet.create({
         paddingLeft: 5,
         backgroundColor: '#818181',
         margin: 20,
-        minHeight: 50,
-        opacity: 0
+        //minHeight: 50,
+        opacity: 1,
+        //height: 0
+        //display: "none" This causes the swipe to not function at all
     },
     swipedConfirmationContainer: {
         flex: 1,
