@@ -24,6 +24,9 @@ export const groceryListSlice = createSlice({
             // @ts-ignore
             state.value.filter(item => item.id !== action.payload.id)
         },
+        setItems:(state, action) => {
+            state.value = action.payload
+        }
         // incrementByAmount: (state, action) => {
         //     state.value += action.payload
         // },
@@ -31,6 +34,6 @@ export const groceryListSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { addItem, removeItem } = groceryListSlice.actions
+export const { addItem, removeItem, setItems } = groceryListSlice.actions
 
 export default groceryListSlice.reducer
