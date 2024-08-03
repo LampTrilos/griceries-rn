@@ -21,6 +21,7 @@ export const groceryListSlice = createSlice({
             state.value.push(action.payload)
         },
         removeItem: (state, action) => {
+            console.log('Payload is ' + action.payload.id)
             // @ts-ignore
             state.value.filter(item => item.id !== action.payload.id)
         },
