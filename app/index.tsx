@@ -20,9 +20,9 @@ export default function Index() {
     //Store section
     const groceriesListFromStore = useSelector(state => state.groceryList.value);
     const dispatch = useDispatch();
-    // const handleAddItem = () => {
-    //     dispatch(addItem({ id: data.length, value: `Item ${data.length}` }));
-    // };
+    const handleAddItem = (newItem) => {
+        dispatch(addItem(newItem));
+    };
     // const handleSetData = () => {
     //     dispatch(setItems(groceriesToShow));
     // };
@@ -111,12 +111,27 @@ export default function Index() {
             text2: 'Παρακαλώ ελέγξτε την σύνδεσή σας',
             autoHide: false,
             visibilityTime: 5000,
-            topOffset: 50
+            topOffset: 50,
+            swipeable: true
         });
     }
 
     //------------------------For user input of new elements-------------------------------//
     const [newItemText, setNewItemText] = useState('');
+    function handleChangeNewItem(event) {
+        const { text } = event.nativeEvent;
+        setNewItemText(text)
+        //Now to add to store
+        handleAddItem(
+            {
+                id: new Date().toString(),
+                title: text
+            })
+        //Now to reset the field
+        setNewItemText('')
+    }
+
+
     return (
         <View >
             <ImageBackground source={require('../assets/images/grocery-bag-girl.jpg')} style={styles.image}
@@ -138,8 +153,8 @@ export default function Index() {
                 <View style={styles.inputContainer}>
                     <TextInput
                         style={styles.item}
-                        placeholder="Τι άλλο...?"
-                        onChangeText={newText => setNewItemText(newText)}
+                        placeholder="Τι άλλο χρειαζόμαστε...?"
+                        onEndEditing={handleChangeNewItem}
                         defaultValue={newItemText}
                     />
                 </View>
@@ -200,7 +215,7 @@ const styles = StyleSheet.create({
         margin: 20,
         //minHeight: 50,
         opacity: 1,
-        //height: 0
+        height: 0
         //display: "none" This causes the swipe to not function at all
     },
     inputContainer: {

@@ -18,6 +18,7 @@ export const groceryListSlice = createSlice({
             // immutable state based off those changes.
             // Also, no return statement is required from these functions.
             // @ts-ignore
+            console.log(action.payload)
             state.value.push(action.payload)
         },
         removeItem: (state, action) => {
