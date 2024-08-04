@@ -1,4 +1,14 @@
-import {ImageBackground, StyleSheet, Text, View, FlatList, Dimensions, TouchableOpacity, Animated} from "react-native";
+import {
+    ImageBackground,
+    StyleSheet,
+    Text,
+    View,
+    FlatList,
+    Dimensions,
+    TouchableOpacity,
+    Animated,
+    TextInput
+} from "react-native";
 import {useSelector, useDispatch} from 'react-redux';
 import {addItem, removeItem, setItems} from '../store/groceryList';
 import axios from 'axios';
@@ -104,10 +114,14 @@ export default function Index() {
             topOffset: 50
         });
     }
+
+    //------------------------For user input of new elements-------------------------------//
+    const [newItemText, setNewItemText] = useState('');
     return (
-        <View style={styles.container}>
+        <View >
             <ImageBackground source={require('../assets/images/grocery-bag-girl.jpg')} style={styles.image}
                              imageStyle={{opacity: 0.6}}>
+                <View style={styles.listContainer}>
                 <FlatList style={styles.list}
                           contentContainerStyle={{alignItems: "center", justifyContent: "center"}}
                           data={groceriesListFromStore}
@@ -120,6 +134,15 @@ export default function Index() {
                               </Swipeable>
                           }
                 />
+                </View>
+                <View style={styles.inputContainer}>
+                    <TextInput
+                        style={styles.item}
+                        placeholder="Τι άλλο...?"
+                        onChangeText={newText => setNewItemText(newText)}
+                        defaultValue={newItemText}
+                    />
+                </View>
             </ImageBackground>
 
         </View>
@@ -130,11 +153,11 @@ const deviceWidth = Dimensions.get('window').width;
 const deviceHeight = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
+    listContainer: {
+        //flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        width: "100%"
+        width: "100%",
     },
     image: {
         height: '100%',
@@ -180,22 +203,11 @@ const styles = StyleSheet.create({
         //height: 0
         //display: "none" This causes the swipe to not function at all
     },
-    swipedConfirmationContainer: {
-        flex: 1,
-    },
-    deleteConfirmationText: {
-        color: '#fcfcfc',
-        fontWeight: 'bold',
-    },
-    deleteButton: {
-        backgroundColor: '#b60000',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        height: '100%',
-    },
-    deleteButtonText: {
-        color: '#fcfcfc',
-        fontWeight: 'bold',
-        padding: 3,
+    inputContainer: {
+        //flex: 1,
+        marginTop: 50,
+        justifyContent: "flex-start",
+        alignItems: "center",
+        width: "100%"
     },
 });
