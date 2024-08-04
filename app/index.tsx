@@ -54,7 +54,7 @@ export default function Index() {
                     //To set the values for out store
                     dispatch(setItems(groceriesFromDb.value));
                     //console.log(groceriesToShow)
-                    //console.log(groceriesListFromStore)
+                    console.log(groceriesListFromStore)
                 }
                 //console.log(groceriesFromDb);
             })

@@ -23,7 +23,8 @@ export const groceryListSlice = createSlice({
         removeItem: (state, action) => {
             console.log('Payload is ' + action.payload.id)
             // @ts-ignore
-            state.value.filter(item => item.id !== action.payload.id)
+            state.value = state.value.filter(item => item.id !== action.payload.id)
+            console.log(state.value)
         },
         setItems:(state, action) => {
             state.value = action.payload
