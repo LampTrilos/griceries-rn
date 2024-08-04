@@ -2,6 +2,7 @@ import {Stack} from "expo-router";
 import store from '../store/store'
 import {Provider} from 'react-redux'
 import {GestureHandlerRootView} from "react-native-gesture-handler";
+import Toast from 'react-native-toast-message';
 
 
 export default function RootLayout() {
@@ -19,6 +20,7 @@ export default function RootLayout() {
                                       }
                                   }}/>
                 </Stack>
+                <Toast />
             </GestureHandlerRootView>
         </Provider>
     );

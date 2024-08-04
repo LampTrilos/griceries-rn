@@ -1,17 +1,16 @@
 import {ImageBackground, StyleSheet, Text, View, FlatList, Dimensions, TouchableOpacity, Animated} from "react-native";
-import {groceries} from "@/constants/Groceries";
 import {useSelector, useDispatch} from 'react-redux';
 import {addItem, removeItem, setItems} from '../store/groceryList';
 import axios from 'axios';
 import {useEffect, useState} from "react";
 import {Swipeable} from "react-native-gesture-handler";
+import Toast from 'react-native-toast-message';
 
 export default function Index() {
     //Store section
-    //console.log(groceriesFromDb);
     const groceriesListFromStore = useSelector(state => state.groceryList.value);
     const dispatch = useDispatch();
-    // const handleAddData = () => {
+    // const handleAddItem = () => {
     //     dispatch(addItem({ id: data.length, value: `Item ${data.length}` }));
     // };
     // const handleSetData = () => {
@@ -19,14 +18,9 @@ export default function Index() {
     // };
     //
     const handleDeleteItem = (item) => {
-         //console.log('delete ' + direction)
-        // console.log(item)
         dispatch(removeItem(item));
-        setGroceriesToShow(groceriesToShow + 1);
-        console.log(groceriesToShow)
-        //console.log('Groceries are ' + groceriesListFromStore)
+
     };
-    const [groceriesToShow, setGroceriesToShow] = useState(1);
 
     // Fetch initial data from Firebase the first time the component loads. The list is actually the store list, which is actually then synced with firebase
     const groceriesFromDb = []
@@ -35,8 +29,11 @@ export default function Index() {
         groceriesFromDb.value = []
         //Insert a row for test purposes
         //axios.post('https://test-f94ee-default-rtdb.europe-west1.firebasedatabase.app/groceryList.json', {title: 'Tiraki44'})
-        axios.get('https://test-f94ee-default-rtdb.europe-west1.firebasedatabase.app/groceryList.json')
+        axios.get('https://test-f94ee-default-rtdb.europe-west1.firebasedatabase.app/groceryList.json', {
+            timeout: 1500 // timeout in milliseconds (5000ms = 5s)
+        })
             .then(response => {
+                console.log(response.data)
                 // Check if response.data is not null
                 if (response.data) {
                     for (const firebaseItemId in response.data) {
@@ -60,11 +57,13 @@ export default function Index() {
             })
             .catch(error => {
                 // Handle any errors here
+                showToast()
+                showToast()
                 console.error('Error fetching grocery list:', error);
             });
-    }, [groceriesToShow]);
+    }, []);
 
-    //For swipe buttons
+    //For swipe buttons, it's empty
     const renderRightActions = (
         progress: Animated.AnimatedInterpolation,
         dragAnimatedValue: Animated.AnimatedInterpolation,
@@ -94,11 +93,17 @@ export default function Index() {
         //     </View>
         // );
     };
-
-    const renderNoActions = () => {
-        return (<></>);
+    //Toast
+    const showToast = () => {
+        Toast.show({
+            type: 'error',
+            text1: 'Σφάλμα δικτύου',
+            text2: 'Παρακαλώ ελέγξτε την σύνδεσή σας',
+            autoHide: false,
+            visibilityTime: 5000,
+            topOffset: 50
+        });
     }
-
     return (
         <View style={styles.container}>
             <ImageBackground source={require('../assets/images/grocery-bag-girl.jpg')} style={styles.image}

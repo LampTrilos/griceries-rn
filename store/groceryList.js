@@ -4,10 +4,10 @@ export const groceryListSlice = createSlice({
     name: 'groceryList',
     initialState: {
         value: [
-            {id: '1', title:  'Μαρόυλια'},
-            {id: '2', title:  'Ντομάτες'},
-            {id: '3', title:  'Κιμάς'  },
-            {id: '4', title:  'Κανελλόνια'  },
+            {id: '1', title:  '...'},
+            {id: '2', title:  '....'},
+            {id: '3', title:  '.....'  },
+            {id: '4', title:  '......'  },
         ],
     },
     reducers: {
@@ -21,10 +21,10 @@ export const groceryListSlice = createSlice({
             state.value.push(action.payload)
         },
         removeItem: (state, action) => {
-            console.log('Payload is ' + action.payload.id)
+            //console.log('Payload is ' + action.payload.id)
             // @ts-ignore
             state.value = state.value.filter(item => item.id !== action.payload.id)
-            console.log(state.value)
+            //console.log(state.value)
         },
         setItems:(state, action) => {
             state.value = action.payload
