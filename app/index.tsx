@@ -134,7 +134,7 @@ export default function Index() {
         setTextEdited('');
     }
 
-    function handleChangeText(text) {
+    function handleChangeText(text: string) {
         setTextEdited(text)
     }
 //------------------------End of user input of new elements-------------------------------//
@@ -151,7 +151,14 @@ export default function Index() {
                                <Swipeable  renderLeftActions={renderRightActions} renderRightActions={renderRightActions} onSwipeableOpen={() => handleDeleteItem(item)}>
                               {/*<Swipeable onSwipeableOpen={handleDeleteItem} renderRightActions={renderNoActions} renderLeftActions={renderNoActions}>*/}
                                   <View >
-                                      <Text style={styles.item}>{item.title}</Text>
+                                      {/*<Text style={styles.item}>{item.title}</Text>*/}
+                                      <TextInput
+                                          style={styles.item}
+                                          placeholder="Τι άλλο χρειαζόμαστε...?"
+                                          onEndEditing={handleInsertNewItem}
+                                          onChangeText={handleChangeText}
+                                          defaultValue={item.title}
+                                      />
                                   </View>
                               </Swipeable>
                           }
