@@ -138,6 +138,15 @@ export default function Index() {
         setTextEdited(text)
     }
 //------------------------End of user input of new elements-------------------------------//
+//------------------------For user edit of elements----------------------------------//
+    const [editMode, setEditMode] = useState(false);
+    const [editedId, setEditedId] = useState('');
+    function invertEditMode(id: string) {
+        setEditedId(id)
+        setEditMode(!editMode)
+    }
+//------------------------End of user edit of elements-------------------------------//
+
 
     return (
         <View >
@@ -148,17 +157,19 @@ export default function Index() {
                           contentContainerStyle={{alignItems: "center", justifyContent: "center"}}
                           data={groceriesListFromStore}
                           renderItem={({item}) =>
-                               <Swipeable  renderLeftActions={renderRightActions} renderRightActions={renderRightActions} onSwipeableOpen={() => handleDeleteItem(item)}>
+                         <Swipeable  renderLeftActions={renderRightActions} renderRightActions={renderRightActions} onSwipeableOpen={() => handleDeleteItem(item)}>
                               {/*<Swipeable onSwipeableOpen={handleDeleteItem} renderRightActions={renderNoActions} renderLeftActions={renderNoActions}>*/}
                                   <View >
-                                      {/*<Text style={styles.item}>{item.title}</Text>*/}
-                                      <TextInput
+                                      { (!editMode || editedId !== item.id) &&  <Text onLongPress={invertEditMode.bind('this', item.id)} style={styles.item}>{item.title}</Text> }
+                                      { editMode && editedId === item.id && <TextInput
                                           style={styles.item}
                                           placeholder="Τι άλλο χρειαζόμαστε...?"
                                           onEndEditing={handleInsertNewItem}
                                           onChangeText={handleChangeText}
                                           defaultValue={item.title}
-                                      />
+                                          onBlur={invertEditMode.bind('this', '')}
+                                          autoFocus={true}
+                                      /> }
                                   </View>
                               </Swipeable>
                           }
