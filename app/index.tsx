@@ -118,7 +118,8 @@ export default function Index() {
 
     //------------------------For user input of new elements-------------------------------//
     const [newItemText, setNewItemText] = useState('');
-    function handleChangeNewItem(event) {
+    const [textEdited, setTextEdited] = useState('');
+    function handleInsertNewItem(event) {
         const { text } = event.nativeEvent;
         setNewItemText(text)
         //Now to add to store
@@ -128,9 +129,15 @@ export default function Index() {
                 title: text
             })
         //Now to reset the field
-        setNewItemText('')
+        console.log('Reseting...')
+        // Reset TextInput value after handling input
+        setTextEdited('');
     }
 
+    function handleChangeText(text) {
+        setTextEdited(text)
+    }
+//------------------------End of user input of new elements-------------------------------//
 
     return (
         <View >
@@ -154,8 +161,9 @@ export default function Index() {
                     <TextInput
                         style={styles.item}
                         placeholder="Τι άλλο χρειαζόμαστε...?"
-                        onEndEditing={handleChangeNewItem}
-                        defaultValue={newItemText}
+                        onEndEditing={handleInsertNewItem}
+                        onChangeText={handleChangeText}
+                        value={textEdited}
                     />
                 </View>
             </ImageBackground>
