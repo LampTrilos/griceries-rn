@@ -10,7 +10,7 @@ import {
     TextInput
 } from "react-native";
 import {useSelector, useDispatch} from 'react-redux';
-import {addItem, removeItem, setItems} from '../store/groceryList';
+import {addItem, editItem, removeItem, setItems} from '../store/groceryList';
 import axios from 'axios';
 import {useEffect, useState} from "react";
 import {Swipeable} from "react-native-gesture-handler";
@@ -22,6 +22,9 @@ export default function Index() {
     const dispatch = useDispatch();
     const handleAddItem = (newItem) => {
         dispatch(addItem(newItem));
+    };
+    const handleEditItem = (editedItem) => {
+        dispatch(editItem(editedItem));
     };
     // const handleSetData = () => {
     //     dispatch(setItems(groceriesToShow));
@@ -118,32 +121,63 @@ export default function Index() {
 
     //------------------------For user input of new elements-------------------------------//
     const [newItemText, setNewItemText] = useState('');
-    const [textEdited, setTextEdited] = useState('');
     function handleInsertNewItem(event) {
-        const { text } = event.nativeEvent;
-        setNewItemText(text)
-        //Now to add to store
-        handleAddItem(
-            {
-                id: new Date().toString(),
-                title: text
-            })
+        //console.log('Inserting')
+        // const { text } = event.nativeEvent;
+        // setNewItemText(text)
+        //Now to add to store if the input is not empty
+        if (newItemText && newItemText.length > 0) {
+            handleAddItem(
+                {
+                    id: new Date().toString(),
+                    title: newItemText
+                })
+        }
         //Now to reset the field
-        console.log('Reseting...')
+        //console.log('Reseting...')
         // Reset TextInput value after handling input
-        setTextEdited('');
+        setNewItemText('');
     }
 
-    function handleChangeText(text: string) {
-        setTextEdited(text)
+    function handleChangeNewText(text: string) {
+        setNewItemText(text)
     }
 //------------------------End of user input of new elements-------------------------------//
 //------------------------For user edit of elements----------------------------------//
     const [editMode, setEditMode] = useState(false);
+    const [textEdited, setTextEdited] = useState('');
+    //Edit mode controls whether the View or the Input is shown, because the swipeable doesn't work with input
     const [editedId, setEditedId] = useState('');
     function invertEditMode(id: string) {
         setEditedId(id)
         setEditMode(!editMode)
+    }
+    function handleChangeEditedText(editedText) {
+         //console.log(editedText)
+        // console.log(event.nativeEvent)
+        // const { text } = event.nativeEvent;
+        setTextEdited(editedText)
+        // Reset TextInput value after handling input
+        //setTextEdited('');
+    }
+
+    function handleUpdateItem(editedItem) {
+        //console.log('Updating')
+        //setNewItemText(text)
+        //Now to add to store if the input is not empty
+        //console.log(textEdited)
+        if (textEdited && textEdited.length > 0) {
+            handleEditItem(
+                {
+                    id: editedItem.id,
+                    title: textEdited
+                })
+        }
+        //Now to reset the field
+        //console.log('Reseting...')
+        // Reset TextInput and editMode value after handling input
+        invertEditMode.bind('')
+        setTextEdited('');
     }
 //------------------------End of user edit of elements-------------------------------//
 
@@ -161,13 +195,12 @@ export default function Index() {
                               {/*<Swipeable onSwipeableOpen={handleDeleteItem} renderRightActions={renderNoActions} renderLeftActions={renderNoActions}>*/}
                                   <View >
                                       { (!editMode || editedId !== item.id) &&  <Text onLongPress={invertEditMode.bind('this', item.id)} style={styles.item}>{item.title}</Text> }
-                                      { editMode && editedId === item.id && <TextInput
+                                      { editMode && editedId === item.id &&
+                                          <TextInput
                                           style={styles.item}
-                                          placeholder="Τι άλλο χρειαζόμαστε...?"
-                                          onEndEditing={handleInsertNewItem}
-                                          onChangeText={handleChangeText}
+                                          onEndEditing={() => handleUpdateItem(item)}
+                                          onChangeText={handleChangeEditedText}
                                           defaultValue={item.title}
-                                          onBlur={invertEditMode.bind('this', '')}
                                           autoFocus={true}
                                       /> }
                                   </View>
@@ -180,8 +213,8 @@ export default function Index() {
                         style={styles.item}
                         placeholder="Τι άλλο χρειαζόμαστε...?"
                         onEndEditing={handleInsertNewItem}
-                        onChangeText={handleChangeText}
-                        value={textEdited}
+                        onChangeText={handleChangeNewText}
+                        value={newItemText}
                     />
                 </View>
             </ImageBackground>

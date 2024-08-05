@@ -18,8 +18,16 @@ export const groceryListSlice = createSlice({
             // immutable state based off those changes.
             // Also, no return statement is required from these functions.
             // @ts-ignore
-            console.log(action.payload)
+            //console.log(action.payload)
             state.value.push(action.payload)
+        },
+        editItem: (state, action) => {
+            //console.log('store')
+            //console.log(state.value)
+            //console.log(action.payload)
+            //Replace an element of a js array with another based on the id
+            state.value =  state.value.map(item => action.payload.id === item.id ? action.payload : item);
+            //console.log(state.value)
         },
         removeItem: (state, action) => {
             //console.log('Payload is ' + action.payload.id)
@@ -37,6 +45,6 @@ export const groceryListSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { addItem, removeItem, setItems } = groceryListSlice.actions
+export const { addItem, editItem,  removeItem, setItems } = groceryListSlice.actions
 
 export default groceryListSlice.reducer
