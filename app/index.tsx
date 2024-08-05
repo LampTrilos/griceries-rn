@@ -15,6 +15,8 @@ import axios from 'axios';
 import {useEffect, useState} from "react";
 import {Swipeable} from "react-native-gesture-handler";
 import Toast from 'react-native-toast-message';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import {gray} from "colorette";
 
 export default function Index() {
     //Store section
@@ -71,7 +73,6 @@ export default function Index() {
             .catch(error => {
                 // Handle any errors here
                 showToast()
-                showToast()
                 console.error('Error fetching grocery list:', error);
             });
     }, []);
@@ -86,13 +87,13 @@ export default function Index() {
             outputRange: [1, 0],
             extrapolate: 'clamp',
         });
-         return (<View style={styles.swipedRow}>
-                        <Animated.View >
-                            <TouchableOpacity>
-                                {/*<Text style={styles.deleteButtonText}>Deleting...</Text>*/}
-                            </TouchableOpacity>
-                        </Animated.View>
-                        </View>);
+        return (<View style={styles.swipedRow}>
+            <Animated.View>
+                <TouchableOpacity>
+                    {/*<Text style={styles.deleteButtonText}>Deleting...</Text>*/}
+                </TouchableOpacity>
+            </Animated.View>
+        </View>);
         // return (
         //     <View style={styles.swipedRow}>
         //         <View style={styles.swipedConfirmationContainer}>
@@ -121,6 +122,7 @@ export default function Index() {
 
     //------------------------For user input of new elements-------------------------------//
     const [newItemText, setNewItemText] = useState('');
+
     function handleInsertNewItem(event) {
         //console.log('Inserting')
         // const { text } = event.nativeEvent;
@@ -142,18 +144,21 @@ export default function Index() {
     function handleChangeNewText(text: string) {
         setNewItemText(text)
     }
+
 //------------------------End of user input of new elements-------------------------------//
 //------------------------For user edit of elements----------------------------------//
     const [editMode, setEditMode] = useState(false);
     const [textEdited, setTextEdited] = useState('');
     //Edit mode controls whether the View or the Input is shown, because the swipeable doesn't work with input
     const [editedId, setEditedId] = useState('');
+
     function invertEditMode(id: string) {
         setEditedId(id)
         setEditMode(!editMode)
     }
+
     function handleChangeEditedText(editedText) {
-         //console.log(editedText)
+        //console.log(editedText)
         // console.log(event.nativeEvent)
         // const { text } = event.nativeEvent;
         setTextEdited(editedText)
@@ -161,16 +166,18 @@ export default function Index() {
         //setTextEdited('');
     }
 
-    function handleUpdateItem(editedItem) {
+    function handleUpdateItem(editedItem, flipDiscountFlag: boolean) {
         //console.log('Updating')
         //setNewItemText(text)
         //Now to add to store if the input is not empty
         //console.log(textEdited)
-        if (textEdited && textEdited.length > 0) {
+        if ((textEdited && textEdited.length > 0) || flipDiscountFlag) {
+            //We will flip the discount if the flag is true
             handleEditItem(
                 {
                     id: editedItem.id,
-                    title: textEdited
+                    title: textEdited ? textEdited : editedItem.title,
+                    discount: flipDiscountFlag ? !editedItem.discount : editedItem.discount
                 })
         }
         //Now to reset the field
@@ -179,38 +186,63 @@ export default function Index() {
         invertEditMode.bind('')
         setTextEdited('');
     }
+
+    //We are delaying because else the input disappeared before firing the persist
+    function delayDisableEditMode() {
+        setTimeout(() => {
+            setEditMode(false), 50
+        })
+    }
+
+
+
 //------------------------End of user edit of elements-------------------------------//
 
 
     return (
-        <View >
+        <View>
             <ImageBackground source={require('../assets/images/grocery-bag-girl.jpg')} style={styles.image}
                              imageStyle={{opacity: 0.6}}>
                 <View style={styles.listContainer}>
-                <FlatList style={styles.list}
-                          contentContainerStyle={{alignItems: "center", justifyContent: "center"}}
-                          data={groceriesListFromStore}
-                          renderItem={({item}) =>
-                         <Swipeable  renderLeftActions={renderRightActions} renderRightActions={renderRightActions} onSwipeableOpen={() => handleDeleteItem(item)}>
-                              {/*<Swipeable onSwipeableOpen={handleDeleteItem} renderRightActions={renderNoActions} renderLeftActions={renderNoActions}>*/}
-                                  <View >
-                                      { (!editMode || editedId !== item.id) &&  <Text onLongPress={invertEditMode.bind('this', item.id)} style={styles.item}>{item.title}</Text> }
-                                      { editMode && editedId === item.id &&
-                                          <TextInput
-                                          style={styles.item}
-                                          onEndEditing={() => handleUpdateItem(item)}
-                                          onChangeText={handleChangeEditedText}
-                                          defaultValue={item.title}
-                                          autoFocus={true}
-                                      /> }
-                                  </View>
-                              </Swipeable>
-                          }
-                />
+                    <FlatList style={styles.list}
+                              contentContainerStyle={{alignItems: "center", justifyContent: "center"}}
+                              data={groceriesListFromStore}
+                              renderItem={({item}) =>
+                                  <Swipeable renderLeftActions={renderRightActions}
+                                             renderRightActions={renderRightActions}
+                                             onSwipeableOpen={() => handleDeleteItem(item)}>
+                                      {/*<Swipeable onSwipeableOpen={handleDeleteItem} renderRightActions={renderNoActions} renderLeftActions={renderNoActions}>*/}
+                                      <View>
+                                          {/* If we are not editing */}
+                                          {(!editMode || editedId !== item.id) &&
+                                              <View style={styles.displayRow}>
+                                                  {/*<TouchableOpacity onPress={() => invertEditMode(item.id)}>*/}
+                                                  <Text onLongPress={invertEditMode.bind('this', item.id)}
+                                                        style={styles.textDisplay}>{item.title}</Text>
+                                                  {/*</TouchableOpacity>*/}
+                                                  {/*<TouchableOpacity onPress={() => console.log('Icon pressed')}>*/}
+                                                  <Icon onPress={() => handleUpdateItem(item, true)} name="dollar"  style={item.discount ? styles.iconActive : styles.iconGrey} />
+                                                  {/*</TouchableOpacity>*/}
+                                              </View>
+                                          }
+                                          {/* If we are editing */}
+                                          {editMode && editedId === item.id &&
+                                              <TextInput
+                                                  style={styles.textNew}
+                                                  onEndEditing={() => handleUpdateItem(item, false)}
+                                                  onChangeText={handleChangeEditedText}
+                                                  defaultValue={item.title}
+                                                  autoFocus={true}
+                                                  onBlur={delayDisableEditMode}
+                                              />}
+                                      </View>
+                                  </Swipeable>
+                              }
+                    />
                 </View>
                 <View style={styles.inputContainer}>
                     <TextInput
-                        style={styles.item}
+                        style={styles.textNew}
                         placeholder="Τι άλλο χρειαζόμαστε...?"
                         onEndEditing={handleInsertNewItem}
                         onChangeText={handleChangeNewText}
@@ -242,7 +274,7 @@ const styles = StyleSheet.create({
         width: '100%',
         //backgroundColor: 'red'
     },
-    item: {
+    textNew: {
         fontWeight: '500',
         fontStyle: 'italic',
         backgroundColor: 'rgba(255, 255, 255, 0.9)',
@@ -256,14 +288,32 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         fontSize: 24
     },
-    row: {
-        flexDirection: 'row',
+    textDisplay: {
+        fontWeight: '500',
+        fontStyle: 'italic',
+        flex: 6,
+        //backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        // width: deviceWidth * 6 / 7,
+        // height: deviceHeight * 1 / 15,
+        // marginTop: 4,
+        // marginBottom: 4,
+        // paddingTop: 10,
+        // paddingBottom: 10,
+        // paddingLeft: 10,
+        // borderRadius: 15,
+        fontSize: 24
+    },
+    iconGrey: {
         flex: 1,
-        alignItems: 'center',
-        paddingLeft: 5,
-        backgroundColor: '#efefef',
-        margin: 20,
-        minHeight: 50,
+        fontSize: 30,
+        fontWeight: 'bold',
+        color: 'gray',
+    },
+    iconActive: {
+        flex: 1,
+        fontSize: 30,
+        fontWeight: 'bold',
+        color: 'blue',
     },
     swipedRow: {
         flexDirection: 'row',
@@ -283,5 +333,18 @@ const styles = StyleSheet.create({
         justifyContent: "flex-start",
         alignItems: "center",
         width: "100%"
+    },
+    displayRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        width: deviceWidth * 6 / 7,
+        height: deviceHeight * 1 / 15,
+        marginTop: 4,
+        marginBottom: 4,
+        paddingTop: 10,
+        paddingBottom: 10,
+        paddingLeft: 10,
+        borderRadius: 15,
     },
 });
