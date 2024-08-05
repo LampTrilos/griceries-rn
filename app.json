@@ -1,15 +1,15 @@
 {
   "expo": {
-    "name": "groceries-rn",
-    "slug": "groceries-rn",
+    "name": "Grocery Bag",
+    "slug": "grocery-bag",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/grocery-bag-running.jpg",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/grocery-bag-running.jpg",
-      "width" : "40%",
+      "width": "40%",
       "resizeMode": "center",
       "backgroundColor": "#ffffff"
     },
@@ -20,7 +20,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.desaan.grocerybag"
     },
     "web": {
       "bundler": "metro",
@@ -32,6 +33,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "9f6a6b9e-aaf4-4fb8-930a-f7cd578f247b"
+      }
+    },
+    "owner": "desaan"
   }
 }

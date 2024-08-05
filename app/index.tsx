@@ -11,12 +11,11 @@ import {
 } from "react-native";
 import {useSelector, useDispatch} from 'react-redux';
 import {addItem, editItem, removeItem, setItems} from '../store/groceryList';
-import axios from 'axios';
 import {useEffect, useState} from "react";
 import {Swipeable} from "react-native-gesture-handler";
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {gray} from "colorette";
+import {axiosGet} from "@/hooks/axiosCall";
 
 export default function Index() {
     //Store section
@@ -38,43 +37,12 @@ export default function Index() {
     };
 
     // Fetch initial data from Firebase the first time the component loads. The list is actually the store list, which is actually then synced with firebase
-    const groceriesFromDb = []
+    const tempList = []
     useEffect(() => {
-        console.log('reloading')
-        groceriesFromDb.value = []
-        //Insert a row for test purposes
-        //axios.post('https://test-f94ee-default-rtdb.europe-west1.firebasedatabase.app/groceryList.json', {title: 'Tiraki44'})
-        axios.get('https://test-f94ee-default-rtdb.europe-west1.firebasedatabase.app/groceryList.json', {
-            timeout: 1500 // timeout in milliseconds (5000ms = 5s)
-        })
-            .then(response => {
-                console.log(response.data)
-                // Check if response.data is not null
-                if (response.data) {
-                    for (const firebaseItemId in response.data) {
-                        if (response.data.hasOwnProperty(firebaseItemId)) {
-                            const finalGroceryItem = {
-                                id: firebaseItemId,
-                                title: response.data[firebaseItemId].title
-                            };
-                            //console.log(finalGroceryItem)
-                            groceriesFromDb.value.push(finalGroceryItem);
-                            //console.log(groceriesFromDb.value)
-                        }
-                    }
-                    //setGroceriesToShow(groceriesFromDb.value)
-                    //To set the values for out store
-                    dispatch(setItems(groceriesFromDb.value));
-                    //console.log(groceriesToShow)
-                    console.log(groceriesListFromStore)
-                }
-                //console.log(groceriesFromDb);
-            })
-            .catch(error => {
-                // Handle any errors here
-                showToast()
-                console.error('Error fetching grocery list:', error);
-            });
+        //console.log('reloading')
+        tempList.value = []
+        //Fetches the list from firebase
+        beginTimer()
     }, []);
 
     //For swipe buttons, it's empty
@@ -120,6 +88,48 @@ export default function Index() {
         });
     }
 
+
+    //Fetches the list from firebase immediately, and repeats the call every 10 secs
+    function beginTimer() {
+        fetchListFromFirebase()
+        setInterval(fetchListFromFirebase, 10000)
+        }
+
+    function fetchListFromFirebase() {
+        axiosGet('', 1500)
+            .then(response => {
+                //console.log(response.data)
+                // Check if response.data is not null
+                if (response.data) {
+                    for (const firebaseItemId in response.data) {
+                        if (response.data.hasOwnProperty(firebaseItemId)) {
+                            const finalGroceryItem = {
+                                id: firebaseItemId,
+                                title: response.data[firebaseItemId].title,
+                                discount: response.data[firebaseItemId].discount
+                            };
+                            //console.log(finalGroceryItem)
+                            tempList.value.push(finalGroceryItem);
+                            //console.log(tempList.value)
+                        }
+                    }
+                    //setGroceriesToShow(tempList.value)
+                    //To set the values for out store
+                    dispatch(setItems(tempList.value));
+                    tempList.value = []
+                    //console.log(groceriesToShow)
+                    //console.log(groceriesListFromStore)
+                }
+                //console.log(tempList);
+            })
+            .catch(error => {
+                // Handle any errors here
+                showToast()
+                console.error('Error fetching grocery list:', error);
+            });
+}
+
+
     //------------------------For user input of new elements-------------------------------//
     const [newItemText, setNewItemText] = useState('');
 
@@ -131,8 +141,9 @@ export default function Index() {
         if (newItemText && newItemText.length > 0) {
             handleAddItem(
                 {
-                    id: new Date().toString(),
-                    title: newItemText
+                    //id: new Date().toString(),
+                    title: newItemText,
+                    discount: false,
                 })
         }
         //Now to reset the field
@@ -221,7 +232,7 @@ export default function Index() {
                                                         style={styles.textDisplay}>{item.title}</Text>
                                                   {/*</TouchableOpacity>*/}
                                                   {/*<TouchableOpacity onPress={() => console.log('Icon pressed')}>*/}
-                                                  <Icon onPress={() => handleUpdateItem(item, true)} name="dollar"  style={item.discount ? styles.iconActive : styles.iconGrey} />
+                                                  <Icon onPress={() => handleUpdateItem(item, true)} name={item.discount ? 'history' : 'cart-plus'}  style={item.discount ? styles.iconGrey : styles.iconActive} />
                                                   {/*</TouchableOpacity>*/}
                                               </View>
                                           }

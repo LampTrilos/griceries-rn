@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import {axiosGet, axiosPost, axiosPut, axiosDelete} from "@/hooks/axiosCall";
 
 export const groceryListSlice = createSlice({
     name: 'groceryList',
@@ -21,6 +22,7 @@ export const groceryListSlice = createSlice({
             //console.log(action.payload)
             state.value.push(action.payload)
             state.value = reOrderList(state.value)
+            axiosPost('', action.payload)
         },
         editItem: (state, action) => {
             //console.log('store')
@@ -30,6 +32,7 @@ export const groceryListSlice = createSlice({
             state.value =  state.value.map(item => action.payload.id === item.id ? action.payload : item);
             //console.log(state.value)
             state.value = reOrderList(state.value)
+            axiosPut('', action.payload)
         },
         removeItem: (state, action) => {
             //console.log('Payload is ' + action.payload.id)
@@ -37,6 +40,7 @@ export const groceryListSlice = createSlice({
             state.value = state.value.filter(item => item.id !== action.payload.id)
             //console.log(state.value)
             state.value = reOrderList(state.value)
+            axiosDelete('', action.payload.id)
         },
         setItems:(state, action) => {
             state.value = action.payload
