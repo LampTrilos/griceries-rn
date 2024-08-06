@@ -38,9 +38,11 @@ export default function Index() {
 
     // Fetch initial data from Firebase the first time the component loads. The list is actually the store list, which is actually then synced with firebase
     const tempList = []
+    const tempList2 = []
     useEffect(() => {
         //console.log('reloading')
         tempList.value = []
+        tempList2.value = []
         //Fetches the list from firebase
         beginTimer()
     }, []);
@@ -91,12 +93,12 @@ export default function Index() {
 
     //Fetches the list from firebase immediately, and repeats the call every 10 secs
     function beginTimer() {
-        fetchListFromFirebase()
-        setInterval(fetchListFromFirebase, 10000)
+        fetchListFromFirebase(true)
+        setInterval(fetchListFromFirebase(false), 10000)
         }
 
-    function fetchListFromFirebase() {
-        axiosGet('', 1500)
+    function fetchListFromFirebase(fetchConstantNeedsToo: boolean) {
+        axiosGet('groceryList', 1500)
             .then(response => {
                 //console.log(response.data)
                 // Check if response.data is not null
@@ -119,9 +121,37 @@ export default function Index() {
                     tempList.value = []
                     //console.log(groceriesToShow)
                     //console.log(groceriesListFromStore)
-                }
-                //console.log(tempList);
-            })
+                    //If this is the first fetch, also fetch the constant needs list
+                    if (fetchConstantNeedsToo) {
+                        axiosGet('constanNeeds', 1500)
+                            .then(response => {
+                                //console.log(response.data)
+                                // Check if response.data is not null
+                                if (response.data) {
+                                    for (const firebaseItemId in response.data) {
+                                        if (response.data.hasOwnProperty(firebaseItemId)) {
+                                            const finalGroceryItem = {
+                                                id: firebaseItemId,
+                                                title: response.data[firebaseItemId].title,
+                                                discount: response.data[firebaseItemId].discount
+                                            };
+                                            //console.log(finalGroceryItem)
+                                            addItem(finalGroceryItem)
+                                            //tempList2.value.push(finalGroceryItem);
+                                            //console.log(tempList.value)
+                                        }
+                                    }
+                                    //setGroceriesToShow(tempList.value)
+                                    //To set the values for out store
+                                    //dispatch(setItems(tempList.value));
+                                    //tempList.value = []
+                                    //console.log(groceriesToShow)
+                                    //console.log(groceriesListFromStore)
+                                }
+                            })
+                    }
+                    //console.log(tempList);
+                } })
             .catch(error => {
                 // Handle any errors here
                 showToast()

@@ -4,12 +4,7 @@ import {axiosGet, axiosPost, axiosPut, axiosDelete} from "@/hooks/axiosCall";
 export const groceryListSlice = createSlice({
     name: 'groceryList',
     initialState: {
-        value: [
-            {id: '1', title:  '...', discount: false},
-            {id: '2', title:  '....', discount: false},
-            {id: '3', title:  '.....', discount: true  },
-            {id: '4', title:  '......', discount: false  },
-        ],
+        value: [],
     },
     reducers: {
         addItem: (state, action) => {
@@ -43,7 +38,7 @@ export const groceryListSlice = createSlice({
             axiosDelete('', action.payload.id)
         },
         setItems:(state, action) => {
-            state.value = action.payload
+            state.value = [constantNeeds,action.payload]
             state.value = reOrderList(state.value)
         }
         // incrementByAmount: (state, action) => {
@@ -52,9 +47,17 @@ export const groceryListSlice = createSlice({
     },
 })
 
-//This function  rearranges the list  every time a change occurs
+//This function  rearranges the list  every time a change occurs, constant items come on top
 function reOrderList(itemList) {
-    return [...itemList].sort((a, b) => (b.discount === a.discount ? 0 : b.discount ? -1 : 1));
+    return [...itemList].sort((a, b) => {
+        if (a.discount !== b.discount) {
+            return b.discount ? 1 : -1;
+        }
+        if (a.constant !== b.constant) {
+            return b.constant ? 1 : -1;
+        }
+        return 0;
+    });
 }
 
 // Action creators are generated for each case reducer function

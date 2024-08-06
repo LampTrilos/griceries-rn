@@ -4,11 +4,11 @@
     "slug": "grocery-bag",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/grocery-bag-running.jpg",
+    "icon": "./assets/images/grocery-bag-running.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/grocery-bag-running.jpg",
+      "image": "./assets/images/grocery-bag-running.png",
       "width": "40%",
       "resizeMode": "center",
       "backgroundColor": "#ffffff"
