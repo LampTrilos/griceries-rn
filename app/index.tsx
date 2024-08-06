@@ -7,7 +7,7 @@ import {
     Dimensions,
     TouchableOpacity,
     Animated,
-    TextInput
+    TextInput, KeyboardAvoidingView, Platform
 } from "react-native";
 import {useSelector, useDispatch} from 'react-redux';
 import {addItem, editItem, removeItem, setItems} from '../store/groceryList';
@@ -214,7 +214,7 @@ export default function Index() {
         <View>
             <ImageBackground source={require('../assets/images/grocery-bag-girl.jpg')} style={styles.image}
                              imageStyle={{opacity: 0.6}}>
-                <View style={styles.listContainer}>
+                <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.listContainer}>
                     <FlatList style={styles.list}
                               contentContainerStyle={{alignItems: "center", justifyContent: "center"}}
                               data={groceriesListFromStore}
@@ -250,7 +250,7 @@ export default function Index() {
                                   </Swipeable>
                               }
                     />
-                </View>
+                </KeyboardAvoidingView>
                 <View style={styles.inputContainer}>
                     <TextInput
                         style={styles.textNew}
@@ -270,8 +270,11 @@ const deviceWidth = Dimensions.get('window').width;
 const deviceHeight = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
     listContainer: {
-        //flex: 1,
+        flex: 1,
         justifyContent: "center",
         alignItems: "center",
         width: "100%",
@@ -281,6 +284,7 @@ const styles = StyleSheet.create({
         width: '100%'
     },
     list: {
+        flexGrow: 1,
         paddingTop: 15,
         width: '100%',
         //backgroundColor: 'red'
@@ -293,8 +297,8 @@ const styles = StyleSheet.create({
         height: deviceHeight * 1 / 15,
         marginTop: 4,
         marginBottom: 4,
-        paddingTop: 10,
-        paddingBottom: 10,
+        paddingTop: 8,
+        paddingBottom: 8,
         paddingLeft: 10,
         borderRadius: 15,
         fontSize: 24
@@ -312,7 +316,7 @@ const styles = StyleSheet.create({
         // paddingBottom: 10,
         // paddingLeft: 10,
         // borderRadius: 15,
-        fontSize: 24
+        fontSize: 20
     },
     iconGrey: {
         flex: 1,
@@ -340,7 +344,8 @@ const styles = StyleSheet.create({
     },
     inputContainer: {
         //flex: 1,
-        marginTop: 50,
+        marginTop: 40,
+        marginBottom: 20,
         justifyContent: "flex-start",
         alignItems: "center",
         width: "100%"
@@ -350,11 +355,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: 'rgba(255, 255, 255, 0.9)',
         width: deviceWidth * 6 / 7,
-        height: deviceHeight * 1 / 15,
+        height: deviceHeight * 1 / 18,
         marginTop: 4,
         marginBottom: 4,
-        paddingTop: 10,
-        paddingBottom: 10,
+        paddingTop: 8,
+        paddingBottom: 8,
         paddingLeft: 10,
         borderRadius: 15,
     },
