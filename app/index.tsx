@@ -10,7 +10,7 @@ import {
     TextInput, KeyboardAvoidingView, Platform
 } from "react-native";
 import {useSelector, useDispatch} from 'react-redux';
-import {addItem, editItem, removeItem, setItems} from '../store/groceryList';
+import {addItem, addItemsLocalOnly, editItem, removeItem, setItems} from '../store/groceryList';
 import {useEffect, useState} from "react";
 import {Swipeable} from "react-native-gesture-handler";
 import Toast from 'react-native-toast-message';
@@ -32,17 +32,16 @@ export default function Index() {
     // };
     //
     const handleDeleteItem = (item) => {
-        dispatch(removeItem(item));
-
+        if (!item.constant) {
+            dispatch(removeItem(item));
+        }
     };
 
     // Fetch initial data from Firebase the first time the component loads. The list is actually the store list, which is actually then synced with firebase
     const tempList = []
-    const tempList2 = []
     useEffect(() => {
         //console.log('reloading')
         tempList.value = []
-        tempList2.value = []
         //Fetches the list from firebase
         beginTimer()
     }, []);
@@ -94,7 +93,9 @@ export default function Index() {
     //Fetches the list from firebase immediately, and repeats the call every 10 secs
     function beginTimer() {
         fetchListFromFirebase(true)
-        setInterval(fetchListFromFirebase(false), 10000)
+        setTimeout(() => {
+            setInterval(() => fetchListFromFirebase(true), 10000); // Subsequent calls every 10 seconds
+        }, 10000);
         }
 
     function fetchListFromFirebase(fetchConstantNeedsToo: boolean) {
@@ -108,7 +109,8 @@ export default function Index() {
                             const finalGroceryItem = {
                                 id: firebaseItemId,
                                 title: response.data[firebaseItemId].title,
-                                discount: response.data[firebaseItemId].discount
+                                discount: response.data[firebaseItemId].discount,
+                                constant: response.data[firebaseItemId].constant
                             };
                             //console.log(finalGroceryItem)
                             tempList.value.push(finalGroceryItem);
@@ -118,38 +120,10 @@ export default function Index() {
                     //setGroceriesToShow(tempList.value)
                     //To set the values for out store
                     dispatch(setItems(tempList.value));
+                    //console.log(groceriesListFromStore)
                     tempList.value = []
                     //console.log(groceriesToShow)
                     //console.log(groceriesListFromStore)
-                    //If this is the first fetch, also fetch the constant needs list
-                    if (fetchConstantNeedsToo) {
-                        axiosGet('constanNeeds', 1500)
-                            .then(response => {
-                                //console.log(response.data)
-                                // Check if response.data is not null
-                                if (response.data) {
-                                    for (const firebaseItemId in response.data) {
-                                        if (response.data.hasOwnProperty(firebaseItemId)) {
-                                            const finalGroceryItem = {
-                                                id: firebaseItemId,
-                                                title: response.data[firebaseItemId].title,
-                                                discount: response.data[firebaseItemId].discount
-                                            };
-                                            //console.log(finalGroceryItem)
-                                            addItem(finalGroceryItem)
-                                            //tempList2.value.push(finalGroceryItem);
-                                            //console.log(tempList.value)
-                                        }
-                                    }
-                                    //setGroceriesToShow(tempList.value)
-                                    //To set the values for out store
-                                    //dispatch(setItems(tempList.value));
-                                    //tempList.value = []
-                                    //console.log(groceriesToShow)
-                                    //console.log(groceriesListFromStore)
-                                }
-                            })
-                    }
                     //console.log(tempList);
                 } })
             .catch(error => {
@@ -174,6 +148,7 @@ export default function Index() {
                     id: new Date().toString(),
                     title: newItemText,
                     discount: false,
+                    constant: false
                 })
         }
         //Now to reset the field
@@ -199,30 +174,22 @@ export default function Index() {
     }
 
     function handleChangeEditedText(editedText) {
-        //console.log(editedText)
-        // console.log(event.nativeEvent)
-        // const { text } = event.nativeEvent;
         setTextEdited(editedText)
-        // Reset TextInput value after handling input
-        //setTextEdited('');
     }
 
     function handleUpdateItem(editedItem, flipDiscountFlag: boolean) {
-        //console.log('Updating')
-        //setNewItemText(text)
         //Now to add to store if the input is not empty
-        //console.log(textEdited)
         if ((textEdited && textEdited.length > 0) || flipDiscountFlag) {
             //We will flip the discount if the flag is true
             handleEditItem(
                 {
                     id: editedItem.id,
                     title: textEdited ? textEdited : editedItem.title,
-                    discount: flipDiscountFlag ? !editedItem.discount : editedItem.discount
+                    discount: flipDiscountFlag ? !editedItem.discount : editedItem.discount,
+                    constant: editedItem.constant
                 })
         }
         //Now to reset the field
-        //console.log('Reseting...')
         // Reset TextInput and editMode value after handling input
         invertEditMode.bind('')
         setTextEdited('');
@@ -256,13 +223,13 @@ export default function Index() {
                                       <View>
                                           {/* If we are not editing */}
                                           {(!editMode || editedId !== item.id) &&
-                                              <View style={styles.displayRow}>
+                                              <View style={!item.constant ? styles.displayRow : styles.displayDisabledRow}>
                                                   {/*<TouchableOpacity onPress={() => invertEditMode(item.id)}>*/}
                                                   <Text onLongPress={invertEditMode.bind('this', item.id)}
                                                         style={styles.textDisplay}>{item.title}</Text>
                                                   {/*</TouchableOpacity>*/}
                                                   {/*<TouchableOpacity onPress={() => console.log('Icon pressed')}>*/}
-                                                  <Icon onPress={() => handleUpdateItem(item, true)} name={item.discount ? 'history' : 'cart-plus'}  style={item.discount ? styles.iconGrey : styles.iconActive} />
+                                                  {!item.constant && <Icon onPress={() => handleUpdateItem(item, true)} name={item.discount ? 'history' : 'cart-plus'}  style={item.discount ? styles.iconGrey : styles.iconActive} /> }
                                                   {/*</TouchableOpacity>*/}
                                               </View>
                                           }
@@ -337,15 +304,6 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         fontStyle: 'italic',
         flex: 6,
-        //backgroundColor: 'rgba(255, 255, 255, 0.9)',
-        // width: deviceWidth * 6 / 7,
-        // height: deviceHeight * 1 / 15,
-        // marginTop: 4,
-        // marginBottom: 4,
-        // paddingTop: 10,
-        // paddingBottom: 10,
-        // paddingLeft: 10,
-        // borderRadius: 15,
         fontSize: 20
     },
     iconGrey: {
@@ -384,6 +342,19 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        width: deviceWidth * 6 / 7,
+        height: deviceHeight * 1 / 18,
+        marginTop: 4,
+        marginBottom: 4,
+        paddingTop: 8,
+        paddingBottom: 8,
+        paddingLeft: 10,
+        borderRadius: 15,
+    },
+    displayDisabledRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: 'rgba(215,215,215,0.9)',
         width: deviceWidth * 6 / 7,
         height: deviceHeight * 1 / 18,
         marginTop: 4,
