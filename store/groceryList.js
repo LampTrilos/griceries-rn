@@ -55,11 +55,27 @@ function reOrderList(itemList) {
             return a.constant ? 1 : -1;
         }
         if (a.discount !== b.discount) {
-            return b.discount ? 1 : -1;
+            return a.discount ? 1 : -1;
         }
-        return 0;
-    });
-    return tempList[0];
+        // Finally sort alphabetically by 'name' in wrong order
+        return b.title.localeCompare(a.title); // Alphabetical order
+        //return 0;
+    }) ;
+    let nonConstants = []
+    let constants = []
+    //Because firebase returns an array of arrays
+    if (Array.isArray(tempList[0])) {
+        nonConstants = tempList[0].filter(item => !item.constant)
+        constants = tempList[0].filter(item => item.constant)
+    }
+    else {
+        nonConstants = tempList.filter(item => !item.constant)
+        constants = tempList.filter(item => item.constant)
+    }
+    //To correctly inverse the order
+    constants = constants.reverse()
+    nonConstants = nonConstants.reverse()
+    return [...constants, ...nonConstants];
 }
 
 

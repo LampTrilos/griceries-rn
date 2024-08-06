@@ -92,13 +92,13 @@ export default function Index() {
 
     //Fetches the list from firebase immediately, and repeats the call every 10 secs
     function beginTimer() {
-        fetchListFromFirebase(true)
+        fetchListFromFirebase()
         setTimeout(() => {
-            setInterval(() => fetchListFromFirebase(true), 10000); // Subsequent calls every 10 seconds
+            setInterval(() => fetchListFromFirebase(), 10000); // Subsequent calls every 10 seconds
         }, 10000);
         }
 
-    function fetchListFromFirebase(fetchConstantNeedsToo: boolean) {
+    function fetchListFromFirebase() {
         axiosGet('groceryList', 1500)
             .then(response => {
                 //console.log(response.data)
@@ -216,7 +216,8 @@ export default function Index() {
                               contentContainerStyle={{alignItems: "center", justifyContent: "center"}}
                               data={groceriesListFromStore}
                               renderItem={({item}) =>
-                                  <Swipeable renderLeftActions={renderRightActions}
+                                  <Swipeable enabled={!item.constant}
+                                      renderLeftActions={renderRightActions}
                                              renderRightActions={renderRightActions}
                                              onSwipeableOpen={() => handleDeleteItem(item)}>
                                       {/*<Swipeable onSwipeableOpen={handleDeleteItem} renderRightActions={renderNoActions} renderLeftActions={renderNoActions}>*/}
@@ -354,7 +355,7 @@ const styles = StyleSheet.create({
     displayDisabledRow: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: 'rgba(215,215,215,0.9)',
+        backgroundColor: 'rgba(225,234,234,0.9)',
         width: deviceWidth * 6 / 7,
         height: deviceHeight * 1 / 18,
         marginTop: 4,
