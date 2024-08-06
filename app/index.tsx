@@ -141,7 +141,7 @@ export default function Index() {
         if (newItemText && newItemText.length > 0) {
             handleAddItem(
                 {
-                    //id: new Date().toString(),
+                    id: new Date().toString(),
                     title: newItemText,
                     discount: false,
                 })
