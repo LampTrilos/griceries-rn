@@ -94,7 +94,7 @@ export default function Index() {
     function beginTimer() {
         fetchListFromFirebase(true)
         setTimeout(() => {
-            setInterval(() => fetchListFromFirebase(false), 5000); // Subsequent calls every 10 seconds
+            setInterval(() => fetchListFromFirebase(false), 10000); // Subsequent calls every 10 seconds
         }, 10000);
         }
 
