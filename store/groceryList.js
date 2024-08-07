@@ -55,17 +55,14 @@ export const groceryListSlice = createSlice({
 
 //This function  rearranges the list  every time a change occurs, constant items come on top
 function reOrderList(itemList) {
-    let tempList =  [...itemList].sort((a, b) => {
-        // if (a.constant !== b.constant) {
-        //     return a.constant ? 1 : -1;
-        // }
+    let tempList = [...itemList].sort((a, b) => {
+        // First sort by 'discount' to put discount items last
         if (a.discount !== b.discount) {
-            return a.discount ? 1 : -1;
+            return a.discount ? 1 : -1; // Discounts go last
         }
-        // Finally sort alphabetically by 'name' in wrong order
-        return b.title.localeCompare(a.title); // Alphabetical order
-        //return 0;
-    }) ;
+        // Finally sort alphabetically by 'title' in ascending order
+        return a.title.localeCompare(b.title); // Alphabetical order
+    });
     let nonConstants = []
     let constants = []
     //Because firebase returns an array of arrays
@@ -78,8 +75,8 @@ function reOrderList(itemList) {
         constants = tempList.filter(item => item.constant)
     }
     //To correctly inverse the order
-    constants = constants.reverse()
-    nonConstants = nonConstants.reverse()
+    //constants = constants.reverse()
+    //nonConstants = nonConstants.reverse()
     return [...constants, ...nonConstants];
 }
 
