@@ -4,7 +4,7 @@
     "slug": "grocery-bag",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/grocery-bag-running.png",
+    "icon": "./assets/images/groceryBag.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {

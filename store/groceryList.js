@@ -15,9 +15,14 @@ export const groceryListSlice = createSlice({
             // Also, no return statement is required from these functions.
             // @ts-ignore
             //console.log(action.payload)
-            state.value.push(action.payload)
-            state.value = reOrderList(state.value)
-            axiosPost('groceryList', action.payload)
+            // Check if the item with the same id already exists in the list
+            const itemExists = state.value.some(item => item.title === action.payload.title);
+            // If the item does not exist, add it to the list
+            if (!itemExists) {
+                state.value.push(action.payload)
+                state.value = reOrderList(state.value)
+                axiosPost('groceryList', action.payload)
+            }
         },
         editItem: (state, action) => {
             //console.log('store')
@@ -26,16 +31,16 @@ export const groceryListSlice = createSlice({
             //Replace an element of a js array with another based on the id
             state.value =  state.value.map(item => action.payload.id === item.id ? action.payload : item);
             //console.log(state.value)
-            state.value = reOrderList(state.value)
             axiosPut('groceryList', action.payload)
+            state.value = reOrderList(state.value)
         },
         removeItem: (state, action) => {
             //console.log('Payload is ' + action.payload.id)
             // @ts-ignore
             state.value = state.value.filter(item => item.id !== action.payload.id)
             //console.log(state.value)
-            state.value = reOrderList(state.value)
             axiosDelete('groceryList', action.payload.id)
+            state.value = reOrderList(state.value)
         },
         setItems:(state, action) => {
             state.value = [action.payload]
@@ -51,9 +56,9 @@ export const groceryListSlice = createSlice({
 //This function  rearranges the list  every time a change occurs, constant items come on top
 function reOrderList(itemList) {
     let tempList =  [...itemList].sort((a, b) => {
-        if (a.constant !== b.constant) {
-            return a.constant ? 1 : -1;
-        }
+        // if (a.constant !== b.constant) {
+        //     return a.constant ? 1 : -1;
+        // }
         if (a.discount !== b.discount) {
             return a.discount ? 1 : -1;
         }

@@ -90,15 +90,16 @@ export default function Index() {
     }
 
 
-    //Fetches the list from firebase immediately, and repeats the call every 10 secs
+    //Fetches the list from firebase immediately, and repeats the call every 10 secs without adding the constant items to store
     function beginTimer() {
-        fetchListFromFirebase()
+        fetchListFromFirebase(true)
         setTimeout(() => {
-            setInterval(() => fetchListFromFirebase(), 10000); // Subsequent calls every 10 seconds
+            setInterval(() => fetchListFromFirebase(false), 5000); // Subsequent calls every 10 seconds
         }, 10000);
         }
 
-    function fetchListFromFirebase() {
+    //We set all the items during the initial fetch, only add the nonconstants in the next ones
+    function fetchListFromFirebase(initialFetch) {
         axiosGet('groceryList', 1500)
             .then(response => {
                 //console.log(response.data)
@@ -119,7 +120,16 @@ export default function Index() {
                     }
                     //setGroceriesToShow(tempList.value)
                     //To set the values for out store
-                    dispatch(setItems(tempList.value));
+                    //We set all the items during the initial fetch, only add the nonconstants in the next ones
+                    if (initialFetch) {
+                        dispatch(setItems(tempList.value));
+                    }
+                    else {
+                        let nonconstantItems = tempList.value.filter(item => item.constant)
+                        for (let item of nonconstantItems) {
+                            dispatch(addItem(item));
+                        }
+                    }
                     //console.log(groceriesListFromStore)
                     tempList.value = []
                     //console.log(groceriesToShow)
@@ -216,7 +226,7 @@ export default function Index() {
                               contentContainerStyle={{alignItems: "center", justifyContent: "center"}}
                               data={groceriesListFromStore}
                               renderItem={({item}) =>
-                                  <Swipeable enabled={!item.constant}
+                                  <Swipeable enabled={true}
                                       renderLeftActions={renderRightActions}
                                              renderRightActions={renderRightActions}
                                              onSwipeableOpen={() => handleDeleteItem(item)}>
