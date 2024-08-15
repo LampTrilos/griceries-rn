@@ -11,12 +11,13 @@ import {
 } from "react-native";
 import {useSelector, useDispatch} from 'react-redux';
 import {addItem, addItemsLocalOnly, editItem, removeItem, setItems} from '../store/groceryList';
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Swipeable} from "react-native-gesture-handler";
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {axiosGet} from "@/hooks/axiosCall";
-import { Stack } from "expo-router";
+import {Stack, useFocusEffect} from "expo-router";
+import ScreenBackground from "@/components/ScreenBackground";
 
 export default function Index() {
     //Store section
@@ -46,6 +47,20 @@ export default function Index() {
         //Fetches the list from firebase
         beginTimer()
     }, []);
+    // Code to run when the component is focused or appears on the screen
+    useFocusEffect(
+        React.useCallback(() => {
+            // Code to run when the component is focused or appears on the screen
+            //console.log('Component is now focused');
+            fetchListFromFirebase(true)
+            // Cleanup (optional) if you want to do something when the component loses focus
+            return () => {
+                //console.log('Component is now unfocused');
+            };
+        }, [])
+    );
+
+
 
     //For swipe buttons, it's empty
     const renderRightActions = (
@@ -64,18 +79,6 @@ export default function Index() {
                 </TouchableOpacity>
             </Animated.View>
         </View>);
-        // return (
-        //     <View style={styles.swipedRow}>
-        //         <View style={styles.swipedConfirmationContainer}>
-        //             <Text style={styles.deleteConfirmationText}>Are you sure?</Text>
-        //         </View>
-        //         <Animated.View style={[styles.deleteButton, {opacity}]}>
-        //             <TouchableOpacity>
-        //                 <Text style={styles.deleteButtonText}>Delete</Text>
-        //             </TouchableOpacity>
-        //         </Animated.View>
-        //     </View>
-        // );
     };
     //Toast
     const showToast = () => {
@@ -219,9 +222,7 @@ export default function Index() {
 
 
     return (
-        <View>
-            <ImageBackground source={require('../assets/images/grocery-bag-girl.jpg')} style={styles.image}
-                             imageStyle={{opacity: 0.6}}>
+        <ScreenBackground>
                 <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.listContainer}>
                     <FlatList style={styles.list}
                               contentContainerStyle={{alignItems: "center", justifyContent: "center"}}
@@ -269,9 +270,7 @@ export default function Index() {
                         value={newItemText}
                     />
                 </View>
-            </ImageBackground>
-
-        </View>
+        </ScreenBackground>
     );
 }
 
@@ -287,10 +286,6 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         width: "100%",
-    },
-    image: {
-        height: '100%',
-        width: '100%'
     },
     list: {
         flexGrow: 1,

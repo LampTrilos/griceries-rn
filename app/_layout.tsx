@@ -33,6 +33,7 @@ export default function RootLayout() {
                                        headerTitleStyle: {
                                            fontWeight: 'bold',
                                        },
+                                       headerRight: () => <Icon onPress={() => navigation.navigate('index')} name={'arrow-circle-left'} style={styles.iconActive} />
                                    })}/>
                     <Drawer.Screen name="commonEvents"
                                    options={{

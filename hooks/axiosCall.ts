@@ -20,7 +20,7 @@ export function axiosPut(url: string, item: Object) {
 
 export function axiosDelete(url: string, item: Object) {
     return  axios.delete(firebaseUrl + url + "/" + item.id + ".json").then(() => {
-        //After deletion we create a historic record
+        //After deletion of to-buy item we create a historic record
         if (url === 'groceryList') {
             let itemBought = {
                 id : new Date(),
@@ -29,6 +29,16 @@ export function axiosDelete(url: string, item: Object) {
                 dateBought: new Date
             }
             axios.post(firebaseUrl + 'groceriesHist' + '.json', itemBought)
+        }
+        //After undoing of item hist, once again the item is placed in the to-buy list
+        if (url === 'groceryHist') {
+            let itemToBuy = {
+                id : new Date(),
+                title : item.title,
+                discount: item.discount,
+                constant: false
+            }
+            axios.post(firebaseUrl + 'groceryList' + '.json', itemToBuy)
         }
     })
 }
