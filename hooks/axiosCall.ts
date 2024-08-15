@@ -18,6 +18,17 @@ export function axiosPut(url: string, item: Object) {
 }
 
 
-export function axiosDelete(url: string, id: string) {
-    return  axios.delete(firebaseUrl + url + "/" + id + ".json")
+export function axiosDelete(url: string, item: Object) {
+    return  axios.delete(firebaseUrl + url + "/" + item.id + ".json").then(() => {
+        //After deletion we create a historic record
+        if (url === 'groceryList') {
+            let itemBought = {
+                id : new Date(),
+                title : item.title,
+                discount: item.discount,
+                dateBought: new Date
+            }
+            axios.post(firebaseUrl + 'groceriesHist' + '.json', itemBought)
+        }
+    })
 }

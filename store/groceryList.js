@@ -39,7 +39,7 @@ export const groceryListSlice = createSlice({
             // @ts-ignore
             state.value = state.value.filter(item => item.id !== action.payload.id)
             //console.log(state.value)
-            axiosDelete('groceryList', action.payload.id)
+            axiosDelete('groceryList', action.payload)
             state.value = reOrderList(state.value)
         },
         setItems:(state, action) => {

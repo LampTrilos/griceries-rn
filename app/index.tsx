@@ -16,6 +16,7 @@ import {Swipeable} from "react-native-gesture-handler";
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {axiosGet} from "@/hooks/axiosCall";
+import { Stack } from "expo-router";
 
 export default function Index() {
     //Store section
@@ -240,7 +241,7 @@ export default function Index() {
                                                         style={styles.textDisplay}>{item.title}</Text>
                                                   {/*</TouchableOpacity>*/}
                                                   {/*<TouchableOpacity onPress={() => console.log('Icon pressed')}>*/}
-                                                  {!item.constant && <Icon onPress={() => handleUpdateItem(item, true)} name={item.discount ? 'history' : 'cart-plus'}  style={item.discount ? styles.iconGrey : styles.iconActive} /> }
+                                                  {!item.constant && <Icon onPress={() => handleUpdateItem(item, true)} name={item.discount ? 'clock-o' : 'cart-plus'}  style={item.discount ? styles.iconGrey : styles.iconActive} /> }
                                                   {/*</TouchableOpacity>*/}
                                               </View>
                                           }
