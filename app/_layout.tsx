@@ -15,7 +15,7 @@ export default function RootLayout() {
                 {/*<Stack>*/}
                 <Drawer screenOptions={{
                     drawerStyle: {
-                        backgroundColor: '#1ab774', // Set the drawer background color here
+                        backgroundColor: '#17a686', // Set the drawer background color here
                         width: 240,
                     },
                     drawerLabelStyle: {

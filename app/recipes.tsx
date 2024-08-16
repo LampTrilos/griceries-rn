@@ -4,10 +4,22 @@ import {useDispatch, useSelector} from "react-redux";
 import React, {useEffect} from "react";
 import {axiosGet} from "@/hooks/axiosCall";
 import {removeItem, setItems} from "@/store/groceryHist";
-import {Animated, Dimensions, FlatList, Platform, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {
+    Animated,
+    Dimensions,
+    FlatList,
+    Platform,
+    StyleSheet,
+    Text,
+    TouchableHighlight,
+    TouchableOpacity,
+    Image,
+    View
+} from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import {Swipeable} from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
+import {useNavigation} from '@react-navigation/native';
 
 export default function history() {
     //Store section
@@ -107,62 +119,69 @@ export default function history() {
     }
 
 
+const navigation = useNavigation();
+    const onPressRecipe = (item) => {
+        navigation.navigate("Recipe", { item });
+    };
+
+    const renderRecipes = ({ item }) => (
+        <TouchableHighlight underlayColor="rgba(73,182,77,0.9)" onPress={() => onPressRecipe(item)}>
+            <View style={styles.container}>
+                <Image style={styles.photo} source={{uri: 'https://media.istockphoto.com/id/1829241109/photo/enjoying-a-brunch-together.jpg?b=1&s=612x612&w=0&k=20&c=Mn_EPBAGwtzh5K6VyfDmd7Q5eJFXSHhGWVr3T4WDQRo='}} />
+                <Text style={styles.title}>{item.title}</Text>
+                {/*<Text style={styles.category}>{getCategoryName(item.categoryId)}</Text>*/}
+                <Text style={styles.category}>qwerqwre</Text>
+            </View>
+        </TouchableHighlight>
+    );
 
     return (
-        <ScreenBackground>
-                <FlatList style={styles.list}
-                          contentContainerStyle={{alignItems: "center", justifyContent: "center"}}
-                          data={groceriesHistFromStore}
-                          renderItem={({item}) =>
-                                  <View>
-                                          <View style={styles.displayDisabledRow}>
-                                              <Text style={styles.textDisplay} >{item.title}</Text>
-                                              <Text style={styles.dateDisplay} >-{item.dateBought}</Text>
-                                              <Icon onPress={() => handleDeleteItem(item)} name={'undo'}  style={styles.iconActive} />
-                                          </View>
-                                  </View>
-                          }
-                />
-        </ScreenBackground>
+        <View>
+            <FlatList vertical showsVerticalScrollIndicator={false} numColumns={2} data={groceriesHistFromStore} renderItem={renderRecipes} keyExtractor={(item) => `${item.recipeId}`} />
+        </View>
     );
 }
-const deviceWidth = Dimensions.get('window').width;
-const deviceHeight = Dimensions.get('window').height;
+// screen sizing
+const { width, height } = Dimensions.get('window');
+// orientation must fixed
+const SCREEN_WIDTH = width < height ? width : height;
+
+const recipeNumColums = 2;
+// item size
+const RECIPE_ITEM_HEIGHT = 150;
+const RECIPE_ITEM_MARGIN = 20;
 const styles = StyleSheet.create({
-    list: {
-        flexGrow: 1,
-        paddingTop: 15,
-        width: '100%',
-        //backgroundColor: 'red'
-    },
-    displayDisabledRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: 'rgba(225,234,234,0.9)',
-        width: deviceWidth * 6 / 7,
-        height: deviceHeight * 1 / 18,
-        marginTop: 4,
-        marginBottom: 4,
-        paddingTop: 8,
-        paddingBottom: 8,
-        paddingLeft: 10,
-        borderRadius: 15,
-    },
-    iconActive: {
+    container: {
         flex: 1,
-        fontSize: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginLeft: RECIPE_ITEM_MARGIN,
+        marginTop: 20,
+        width: (SCREEN_WIDTH - (recipeNumColums + 1) * RECIPE_ITEM_MARGIN) / recipeNumColums,
+        height: RECIPE_ITEM_HEIGHT + 75,
+        borderColor: '#cccccc',
+        borderWidth: 0.5,
+        borderRadius: 15
+    },
+    photo: {
+        width: (SCREEN_WIDTH - (recipeNumColums + 1) * RECIPE_ITEM_MARGIN) / recipeNumColums,
+        height: RECIPE_ITEM_HEIGHT,
+        borderRadius: 15,
+        borderBottomLeftRadius: 0,
+        borderBottomRightRadius: 0
+    },
+    title: {
+        flex: 1,
+        fontSize: 17,
         fontWeight: 'bold',
-        color: 'blue',
+        textAlign: 'center',
+        color: '#444444',
+        marginTop: 3,
+        marginRight: 5,
+        marginLeft: 5,
     },
-    textDisplay: {
-        fontWeight: '500',
-        flex: 6,
-        fontSize: 20
-    },
-    dateDisplay: {
-        fontWeight: '400',
-        justifyContent: 'flex-end',
-        flex: 3,
-        fontSize: 16
-    },
+    category: {
+        marginTop: 5,
+        marginBottom: 5
+    }
 })
