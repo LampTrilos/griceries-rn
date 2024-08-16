@@ -5,7 +5,7 @@ import {GestureHandlerRootView} from "react-native-gesture-handler";
 import Toast from 'react-native-toast-message';
 import {Button, StyleSheet} from "react-native";
 import {Drawer} from 'expo-router/drawer';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import Icon from "react-native-vector-icons/FontAwesome";
 
 export default function RootLayout() {
@@ -13,27 +13,51 @@ export default function RootLayout() {
         <Provider store={store}>
             <GestureHandlerRootView style={{flex: 1}}>
                 {/*<Stack>*/}
-                <Drawer >
+                <Drawer screenOptions={{
+                    drawerStyle: {
+                        backgroundColor: '#1ab774', // Set the drawer background color here
+                        width: 240,
+                    },
+                    drawerLabelStyle: {
+                        fontSize: 18, // Set font size here
+                        fontWeight: 'bold', // Optional: Set font weight
+                        color: 'white', // Optional: Set font color
+                    },
+                    activeTintColor: 'white', // Text color for the active item
+                }}>
                     <Drawer.Screen name="index"
-                                   options={({ navigation }) => ({
+                                   options={({navigation}) => ({
                                        title: 'Grocery bag (girl)',
                                        headerStyle: {backgroundColor: '#dffc35'},
                                        headerTintColor: '#085959',
                                        headerTitleStyle: {
                                            fontWeight: 'bold',
                                        },
-                                        headerRight: () => <Icon onPress={() => navigation.navigate('history')} name={'history'} style={styles.iconActive} />,
+                                       headerRight: () => <Icon onPress={() => navigation.navigate('history')}
+                                                                name={'history'} style={styles.iconActive}/>,
                                    })}/>
                     <Drawer.Screen name="history"
-                                   options={({ navigation }) => ({
-                                       drawerItemStyle: { display: "none" },
+                                   options={({navigation}) => ({
+                                       drawerItemStyle: {display: "none"},
                                        title: 'History',
                                        headerStyle: {backgroundColor: '#dffc35'},
                                        headerTintColor: '#085959',
                                        headerTitleStyle: {
                                            fontWeight: 'bold',
                                        },
-                                       headerRight: () => <Icon onPress={() => navigation.navigate('index')} name={'arrow-circle-left'} style={styles.iconActive} />
+                                       headerRight: () => <Icon onPress={() => navigation.navigate('index')}
+                                                                name={'arrow-circle-left'} style={styles.iconActive}/>
+                                   })}/>
+                    <Drawer.Screen name="recipes"
+                                   options={({navigation}) => ({
+                                       title: 'Οι συνταγές μας',
+                                       headerStyle: {backgroundColor: '#dffc35'},
+                                       headerTintColor: '#085959',
+                                       headerTitleStyle: {
+                                           fontWeight: 'bold',
+                                       },
+                                       headerRight: () => <Icon onPress={() => navigation.navigate('index')}
+                                                                name={'arrow-circle-left'} style={styles.iconActive}/>
                                    })}/>
                     <Drawer.Screen name="commonEvents"
                                    options={{
@@ -47,11 +71,11 @@ export default function RootLayout() {
                                    }}/>
                     {/*</Stack>*/}
                     <Toast/>
-                    </Drawer>
+                </Drawer>
             </GestureHandlerRootView>
         </Provider>
 
-);
+    );
 }
 
 const styles = StyleSheet.create({
