@@ -93,18 +93,6 @@ export default function history() {
                 //console.error('Error fetching grocery list:', error);
             });
     }
-
-    function formatDateToDDMMYYYY(isoDateString) {
-        const date = new Date(isoDateString);
-
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
-        const year = date.getFullYear();
-
-        return `${day}/${month}/${year}`;
-    }
-
-
     //Toast
     const showToast = () => {
         Toast.show({
@@ -125,19 +113,19 @@ const navigation = useNavigation();
     };
 
     const renderRecipes = ({ item }) => (
-        <TouchableHighlight underlayColor="rgba(73,182,77,0.9)" onPress={() => onPressRecipe(item)}>
+        <TouchableHighlight underlayColor='rgba(73,182,77,0.9)' onPress={() => onPressRecipe(item)}>
             <View style={styles.container}>
                 <Image style={styles.photo} source={{uri: 'https://media.istockphoto.com/id/1829241109/photo/enjoying-a-brunch-together.jpg?b=1&s=612x612&w=0&k=20&c=Mn_EPBAGwtzh5K6VyfDmd7Q5eJFXSHhGWVr3T4WDQRo='}} />
                 <Text style={styles.title}>{item.title}</Text>
                 {/*<Text style={styles.category}>{getCategoryName(item.categoryId)}</Text>*/}
-                <Text style={styles.category}>qwerqwre</Text>
+                {/*<Text style={styles.category}>qwerqwre</Text>*/}
             </View>
         </TouchableHighlight>
     );
 
     return (
         <View>
-            <FlatList vertical showsVerticalScrollIndicator={false} numColumns={2} data={groceriesListFromStore} renderItem={renderRecipes} keyExtractor={(item) => `${item.recipeId}`} />
+            <FlatList vertical showsVerticalScrollIndicator={false} numColumns={3} data={groceriesListFromStore} renderItem={renderRecipes} keyExtractor={(item) => `${item.id}`} />
         </View>
     );
 }
@@ -146,19 +134,18 @@ const { width, height } = Dimensions.get('window');
 // orientation must fixed
 const SCREEN_WIDTH = width < height ? width : height;
 
-const recipeNumColums = 2;
+const recipeNumColums = 3;
 // item size
-const RECIPE_ITEM_HEIGHT = 150;
+const RECIPE_ITEM_HEIGHT = 70;
 const RECIPE_ITEM_MARGIN = 20;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
         alignItems: 'center',
         marginLeft: RECIPE_ITEM_MARGIN,
         marginTop: 20,
         width: (SCREEN_WIDTH - (recipeNumColums + 1) * RECIPE_ITEM_MARGIN) / recipeNumColums,
-        height: RECIPE_ITEM_HEIGHT + 75,
+        height: RECIPE_ITEM_HEIGHT + 40,
         borderColor: '#cccccc',
         borderWidth: 0.5,
         borderRadius: 15
@@ -174,7 +161,7 @@ const styles = StyleSheet.create({
         flex: 1,
         fontSize: 17,
         fontWeight: 'bold',
-        textAlign: 'center',
+        justifyContent: 'flex-end',
         color: '#444444',
         marginTop: 3,
         marginRight: 5,
