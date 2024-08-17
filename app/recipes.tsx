@@ -23,7 +23,7 @@ import {useNavigation} from '@react-navigation/native';
 
 export default function history() {
     //Store section
-    const groceriesHistFromStore = useSelector(state => state.groceryHist.value);
+    const groceriesListFromStore = useSelector(state => state.recipeList.value);
     const dispatch = useDispatch();
     // const handleSetData = () => {
     //     dispatch(setItems(groceriesToShow));
@@ -42,7 +42,7 @@ export default function history() {
     React.useCallback(() => {
         // Code to run when the component is focused or appears on the screen
         //console.log('Component is now focused');
-        fetchHistFromFirebase()
+        //fetchHistFromFirebase()
         // Cleanup (optional) if you want to do something when the component loses focus
         return () => {
             //console.log('Component is now unfocused');
@@ -81,7 +81,7 @@ export default function history() {
                     //To set the values for out store
                     //We set all the items during the initial fetch, only add the nonconstants in the next ones
                         dispatch(setItems(tempList));
-                    //console.log(groceriesHistFromStore)
+                    //console.log(groceriesListFromStore)
                     tempList = []
                     //console.log(groceriesToShow)
                     //console.log(groceriesListFromStore)
@@ -137,7 +137,7 @@ const navigation = useNavigation();
 
     return (
         <View>
-            <FlatList vertical showsVerticalScrollIndicator={false} numColumns={2} data={groceriesHistFromStore} renderItem={renderRecipes} keyExtractor={(item) => `${item.recipeId}`} />
+            <FlatList vertical showsVerticalScrollIndicator={false} numColumns={2} data={groceriesListFromStore} renderItem={renderRecipes} keyExtractor={(item) => `${item.recipeId}`} />
         </View>
     );
 }
