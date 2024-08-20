@@ -48,7 +48,7 @@ export default function RootLayout() {
                                        headerRight: () => <Icon onPress={() => navigation.navigate('index')}
                                                                 name={'arrow-circle-left'} style={styles.iconActive}/>
                                    })}/>
-                    <Drawer.Screen name="recipeCategories&Search"
+                    <Drawer.Screen name="recipes/recipeCategoriesSearch"
                                    options={({navigation}) => ({
                                        title: 'Οι συνταγές μας',
                                        headerStyle: {backgroundColor: '#dffc35'},
