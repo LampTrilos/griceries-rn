@@ -9,7 +9,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 import Index from "@/app/index";
 import history from "@/app/history";
-import recipeStack from "@/app/recipeStack";
+import RecipeStack from "@/app/recipeStack";
 import {useNavigation} from '@react-navigation/native';
 import Icon from "react-native-vector-icons/FontAwesome";
 
@@ -66,7 +66,7 @@ export default function RootLayout() {
                                                                         name={'arrow-circle-left'} style={styles.iconActive}/>
                                            })}/>
                         <Drawer.Screen name="recipeStack"
-                                       component={recipeStack}
+                                       component={RecipeStack}
                                        options={({navigation}) => ({
                                            title: 'Οι συνταγές μας',
                                            headerStyle: {backgroundColor: '#dffc35'},
