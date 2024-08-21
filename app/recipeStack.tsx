@@ -19,8 +19,8 @@ export default function recipeStack() {
         {/*      </Stack>*/}
         {/*// </NavigationContainer>*/}
             <Stack.Navigator initialRouteName='recipeCategoriesSearch' >
-                <Stack.Screen name="recipe" component={recipe} options={{ headerShown: false }}/>
                 <Stack.Screen name="recipeCategoriesSearch" component={recipeCategoriesSearch} options={{ headerShown: false }}/>
+                <Stack.Screen name="recipe" component={recipe}/>
             </Stack.Navigator>
         </>
     );

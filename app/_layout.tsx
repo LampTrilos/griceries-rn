@@ -8,6 +8,7 @@ import {Button, StyleSheet} from "react-native";
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 import Index from "@/app/index";
+import history from "@/app/history";
 import recipeStack from "@/app/recipeStack";
 import {useNavigation} from '@react-navigation/native';
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -51,6 +52,19 @@ export default function RootLayout() {
                                           headerRight: () => <Icon onPress={() => navigation.navigate('history')}
                                                                    name={'history'} style={styles.iconActive}/>,
                                        })}/>
+                            <Drawer.Screen name="history"
+                                           component={history}
+                                           options={({navigation}) => ({
+                                               drawerItemStyle: {display: "none"},
+                                               title: 'History',
+                                               headerStyle: {backgroundColor: '#dffc35'},
+                                               headerTintColor: '#085959',
+                                               headerTitleStyle: {
+                                                   fontWeight: 'bold',
+                                               },
+                                               headerRight: () => <Icon onPress={() => navigation.navigate('index')}
+                                                                        name={'arrow-circle-left'} style={styles.iconActive}/>
+                                           })}/>
                         <Drawer.Screen name="recipeStack"
                                        component={recipeStack}
                                        options={({navigation}) => ({

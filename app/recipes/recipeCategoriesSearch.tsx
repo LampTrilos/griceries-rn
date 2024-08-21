@@ -124,9 +124,11 @@ const navigation = useNavigation();
     );
 
     return (
+        <ScreenBackground>
         <View>
             <FlatList vertical showsVerticalScrollIndicator={false} numColumns={3} data={groceriesListFromStore} renderItem={renderRecipes} keyExtractor={(item) => `${item.id}`} />
         </View>
+        </ScreenBackground>
     );
 }
 // screen sizing
@@ -161,11 +163,15 @@ const styles = StyleSheet.create({
         flex: 1,
         fontSize: 17,
         fontWeight: 'bold',
-        justifyContent: 'flex-end',
-        color: '#444444',
+        color: '#1f1f1f',
+        width: '100%',
+        backgroundColor: 'white',
+        textAlign: 'center',
         marginTop: 3,
         marginRight: 5,
         marginLeft: 5,
+        borderBottomLeftRadius: 15,
+        borderBottomRightRadius: 15
     },
     category: {
         marginTop: 5,

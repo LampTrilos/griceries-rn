@@ -6,14 +6,18 @@ export const recipesList = [
             {
                 id: '1a',
                 title: 'Μακαρόνια Αλ Φρόντο',
-                notes: 'Μην τα βρέξεις πολύ',
+                notes: 'Μην τα βρέξεις πολύ' +
+                    'Μην τα βρέξεις πολύ2' +
+                    'Μην τα βρέξεις πολύ3',
                 url: 'https://www.argiro.gr/recipe/makaronia-me-kima-axeperasta/',
                 html: ''
             },
             {
                 id: '1b',
                 title: 'Μακαρόνια Αλ Μπάντυ',
-                notes: '',
+                notes: 'Μην τα βρέξεις πολύ' +
+                    'Μην τα βρέξεις πολύ2' +
+                    'Μην τα βρέξεις πολύ3',
                 url: 'https://akispetretzikis.com/recipe/8194/makaronia-me-kima',
                 html: ''
             },
