@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 //import { Stack } from "expo-router";
 import recipeCategoriesSearch from "@/app/recipes/recipeCategoriesSearch";
 import recipe from "@/app/recipes/recipe";
+import recipeList from "@/app/recipes/recipeList";
 import {Text} from "react-native";
 import 'react-native-gesture-handler';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -20,6 +21,7 @@ export default function recipeStack() {
         {/*// </NavigationContainer>*/}
             <Stack.Navigator initialRouteName='recipeCategoriesSearch' >
                 <Stack.Screen name="recipeCategoriesSearch" component={recipeCategoriesSearch} options={{ headerShown: false }}/>
+                <Stack.Screen name="recipeList" component={recipeList}/>
                 <Stack.Screen name="recipe" component={recipe}/>
             </Stack.Navigator>
         </>

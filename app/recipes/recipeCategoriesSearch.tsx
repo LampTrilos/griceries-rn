@@ -109,7 +109,7 @@ export default function history() {
 
 const navigation = useNavigation();
     const onPressRecipe = (item) => {
-        navigation.navigate("recipe", { item });
+        navigation.navigate("recipeList", { item });
     };
 
     const renderRecipes = ({ item }) => (
