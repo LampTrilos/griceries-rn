@@ -23,7 +23,8 @@ import {useNavigation} from '@react-navigation/native';
 
 export default function history() {
     //Store section
-    const groceriesListFromStore = useSelector(state => state.recipeList.value);
+    const categoriesListFromStore = useSelector(state => state.recipeList.categories);
+    //console.log(categoriesListFromStore)
     const dispatch = useDispatch();
     // const handleSetData = () => {
     //     dispatch(setItems(groceriesToShow));
@@ -108,12 +109,13 @@ export default function history() {
 
 
 const navigation = useNavigation();
-    const onPressRecipe = (item) => {
-        navigation.navigate("recipeList", { item });
+    const onPressRecipe = (category) => {
+        navigation.navigate("recipeList", { category });
     };
 
-    const renderRecipes = ({ item }) => (
-        <TouchableHighlight underlayColor='rgba(73,182,77,0.9)' onPress={() => onPressRecipe(item)}>
+    //'item' is a reserved word, don't attempt to change it
+    const renderCategory = ({ item }) => (
+        <TouchableHighlight underlayColor='rgba(73,182,77,0.1)' onPress={() => onPressRecipe(item)}>
             <View style={styles.container}>
                 <Image style={styles.photo} source={{uri: 'https://media.istockphoto.com/id/1829241109/photo/enjoying-a-brunch-together.jpg?b=1&s=612x612&w=0&k=20&c=Mn_EPBAGwtzh5K6VyfDmd7Q5eJFXSHhGWVr3T4WDQRo='}} />
                 <Text style={styles.title}>{item.title}</Text>
@@ -126,7 +128,7 @@ const navigation = useNavigation();
     return (
         <ScreenBackground>
         <View>
-            <FlatList vertical showsVerticalScrollIndicator={false} numColumns={3} data={groceriesListFromStore} renderItem={renderRecipes} keyExtractor={(item) => `${item.id}`} />
+            <FlatList vertical showsVerticalScrollIndicator={false} numColumns={3} data={categoriesListFromStore} renderItem={renderCategory} keyExtractor={(item) => `${item.id}`} />
         </View>
         </ScreenBackground>
     );

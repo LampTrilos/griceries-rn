@@ -1,11 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit'
 import {axiosGet, axiosPost, axiosPut, axiosDelete} from "@/hooks/axiosCall";
-import {recipesList} from "@/store/testRecipes";
+import {recipesCategories, recipesList} from "@/store/testRecipes";
 
 export const recipeListSlice = createSlice({
     name: 'recipeList',
     initialState: {
-        value: recipesList,
+        recipes: recipesList,
+        categories: recipesCategories,
     },
     reducers: {
         addItem: (state, action) => {
@@ -44,8 +45,8 @@ export const recipeListSlice = createSlice({
             state.value = reOrderList(state.value)
         },
         setItems:(state, action) => {
-            state.value = [action.payload]
-            state.value = reOrderList(state.value)
+            state.categories = [action.payload]
+            //state.value = reOrderList(state.value)
             //console.log(state.value)
         }
         // incrementByAmount: (state, action) => {

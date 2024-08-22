@@ -1,22 +1,39 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, FlatList, View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import ScreenBackground from "@/components/ScreenBackground";
+import {useDispatch, useSelector} from "react-redux";
+import {setItems} from "@/store/groceryList";
 
-export default function recipe ({ navigation, route }) {
+export default function recipeList ({ navigation, route }) {
+    //State that will control the list that is rendered after each pick
+    const [filteredRecipes, setFilteredRecipes] = useState([]);
+    //List of recipes to be rendered based on the criteria
+    //Store section
+    const recipeListFromStore = useSelector(state => state.recipeList.recipes);
+    const dispatch = useDispatch();
+
     // Extract parameters passed via navigation
-    const { item } = route.params;
+    const { category } = route.params;
     useEffect(() => {
         // Programmatically set the header title based on the item passed as a parameter
         navigation.setOptions({
-            title: item.title, // Set the header title dynamically
+            title: category.title, // Set the header title dynamically
         });
-    }, [navigation, item]);
+        //Now we will create the list based on the category the user picked
+
+// Filtering the list
+        const filteredList = recipeListFromStore.filter(recipe =>
+            recipe.categories.includes(category.title)
+        );
+        setFilteredRecipes(filteredList)
+
+    }, [navigation, category]);
 
     //The element of the list
     const renderRecipe = ({ item }) => (
         <TouchableOpacity
             style={styles.itemContainer}
-            onPress={() => navigation.navigate('recipe', { title: item.title, item })}
+            onPress={() => navigation.navigate('recipe', { item })}
         >
             <Text style={styles.itemText}>{item.title}</Text>
         </TouchableOpacity>
@@ -25,7 +42,7 @@ export default function recipe ({ navigation, route }) {
     return (
         <ScreenBackground>
             <FlatList
-                data={item.recipes}
+                data={filteredRecipes}
                 keyExtractor={(item) => item.id}
                 contentContainerStyle={styles.listContainer}
                 renderItem={renderRecipe}
