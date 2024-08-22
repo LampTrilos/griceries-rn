@@ -33,8 +33,23 @@ export default function recipe({navigation, route}) {
     };
 
 
+    //Js that removes images so the html is cleaner
+    const hideImagesScript = `
+  function hideImages() {
+    var images = document.getElementsByTagName('img');
+    for (var i = 0; i < images.length; i++) {
+      images[i].style.display = 'none';
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", hideImages);
+
+  var observer = new MutationObserver(hideImages);
+  observer.observe(document.body, { childList: true, subtree: true });
+`;
+
     return (
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <>
             <CustomModal
                 visible={modalVisible}
                 onClose={closeModal}
@@ -42,9 +57,15 @@ export default function recipe({navigation, route}) {
             />
             <WebView
                 originWhitelist={['*']}
-                source={{uri: 'https://reactnative.dev/'}}
+                source={{uri: item.url}}
+                injectedJavaScript={hideImagesScript}
+                onError={(syntheticEvent) => {
+                    const { nativeEvent } = syntheticEvent;
+                    console.warn('WebView error: ', nativeEvent);
+                }}
+                onLoad={() => console.log('WebView loaded')}
             />
-        </View>
+        </>
     )
 }
 
